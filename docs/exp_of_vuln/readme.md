@@ -108,7 +108,7 @@
 
 Запускаем скрипт, указывая изображение, которое следует восстановить:
 
-`python IHDR-Solver/ihdr-stego.py fix_me_pls.png`
+`python IHDR-Solver/ihdr-stego.py home/kk/Downloads/fix_me_pls.png`
 
 ![](Aspose.Words.2abdd5fc-4121-4a57-a723-5b18ba07288b.020.png)
 
