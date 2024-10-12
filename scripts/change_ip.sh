@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ $# -ne 1 ]; then
-    echo "Использование: $0 <IP-адрес>"
+    echo "Usage: $0 <IP-адрес>"
     exit 1
 fi
 
